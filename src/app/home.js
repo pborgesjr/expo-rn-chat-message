@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { View, Text, StyleSheet, FlatList, TextInput } from "react-native";
 import { useRouter } from "expo-router";
 import {
@@ -6,39 +6,38 @@ import {
   onSnapshot,
   query,
   addDoc,
-  doc,
-  orderBy,
   where,
   getDocs,
 } from "firebase/firestore";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 import { Chat } from "../components";
+import { UserContext } from "../context";
 import { database } from "../config/firebase";
-import { getItem } from "../utils";
 
 const Home = () => {
   const [search, setSearch] = useState("");
-  const [user, setUser] = useState("");
   const [conversations, setConversations] = useState([]);
+
+  const { userName } = useContext(UserContext);
 
   const router = useRouter();
 
   const handleSearch = async () => {
-    if (search === user) {
+    if (search === userName) {
       return;
     }
 
     const originQuery = query(
       collection(database, "chats"),
-      where("origin", "==", user),
+      where("origin", "==", userName),
       where("destination", "==", search)
     );
 
     const destinationQuery = query(
       collection(database, "chats"),
       where("origin", "==", search),
-      where("destination", "==", user)
+      where("destination", "==", userName)
     );
 
     const originQuerySnapshot = await getDocs(originQuery);
@@ -49,7 +48,7 @@ const Home = () => {
 
     if (originQuerySnapshot.empty) {
       originNewDoc = await addDoc(collection(database, "chats"), {
-        origin: user,
+        origin: userName,
         destination: search,
         messages: [],
       });
@@ -58,7 +57,7 @@ const Home = () => {
     if (destinationQuerySnapshot.empty) {
       destinationNewDoc = await addDoc(collection(database, "chats"), {
         origin: search,
-        destination: user,
+        destination: userName,
         messages: [],
       });
     }
@@ -73,11 +72,11 @@ const Home = () => {
     });
   };
 
-  const handleNavigate = async (originID) => {
+  const handleNavigate = async (item) => {
     const destinationQuery = query(
       collection(database, "chats"),
-      where("origin", "==", search),
-      where("destination", "==", user)
+      where("origin", "==", item.contact),
+      where("destination", "==", userName)
     );
 
     const destinationQuerySnapshot = await getDocs(destinationQuery);
@@ -87,7 +86,7 @@ const Home = () => {
     if (destinationQuerySnapshot.empty) {
       destinationNewDoc = await addDoc(collection(database, "chats"), {
         origin: search,
-        destination: user,
+        destination: userName,
         messages: [],
       });
     }
@@ -95,7 +94,7 @@ const Home = () => {
     router.push({
       pathname: "conversation",
       params: {
-        originConversationID: originID,
+        originConversationID: item.id,
         destinationConversationID:
           destinationQuerySnapshot.docs?.[0]?.id || destinationNewDoc.id,
       },
@@ -103,25 +102,15 @@ const Home = () => {
   };
 
   const renderItem = ({ item }) => (
-    <Chat {...item} onPress={() => handleNavigate(item.id)} />
+    <Chat {...item} onPress={() => handleNavigate(item)} />
   );
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      //TODO: handle error
-      const user = await getItem("user");
-      setUser(user);
-    };
-
-    fetchUser();
-  }, []);
 
   /**Fetch messages history when the screen is mounted */
   useEffect(() => {
     async function getMessages() {
       const q = query(
         collection(database, "chats"),
-        where("origin", "==", user)
+        where("origin", "==", userName)
       );
 
       /**Attach a listener to the collection to fetch changes in real time */
@@ -137,14 +126,14 @@ const Home = () => {
       );
     }
 
-    if (user) {
+    if (userName) {
       getMessages();
     }
-  }, [user]);
+  }, [userName]);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Messages from {user}</Text>
+      <Text style={styles.title}>Messages from {userName}</Text>
       <View
         style={{
           flexDirection: "row",
@@ -155,7 +144,7 @@ const Home = () => {
           value={search}
           onChangeText={setSearch}
           style={styles.input}
-          placeholder="Search for a user to start a conversation"
+          placeholder="Search for a userName to start a conversation"
         />
         <MaterialCommunityIcons.Button
           name="plus"

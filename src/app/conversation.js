@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { GiftedChat } from "react-native-gifted-chat";
 import { onSnapshot, updateDoc, arrayUnion, doc } from "firebase/firestore";
 
+import { UserContext } from "../context";
 import { database } from "../config/firebase";
-import { getItem } from "../utils";
 
 const Conversation = () => {
-  const [userName, setUserName] = useState("");
   const [messages, setMessages] = useState([]);
+
+  const { userName } = useContext(UserContext);
 
   const router = useRouter();
   const { originConversationID, destinationConversationID } =
@@ -43,16 +44,6 @@ const Conversation = () => {
       }),
     });
   };
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      //TODO: handle error
-      const userName = await getItem("user");
-      setUserName(userName);
-    };
-
-    fetchUser();
-  }, []);
 
   /**Fetch messages history when the screen is mounted */
   useEffect(() => {
