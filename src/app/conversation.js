@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Keyboard } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { GiftedChat } from "react-native-gifted-chat";
@@ -19,6 +19,14 @@ const Conversation = () => {
 
   const originDocRef = doc(database, "chats", originConversationID);
   const destinationDocRef = doc(database, "chats", destinationConversationID);
+
+  const handleGoBack = () => {
+    Keyboard.dismiss();
+
+    setTimeout(() => {
+      router.back();
+    }, 200);
+  };
 
   const sendMessage = async (messages = []) => {
     setMessages((previousMessages) => {
@@ -70,7 +78,7 @@ const Conversation = () => {
       <View style={styles.header}>
         <MaterialCommunityIcons.Button
           name="chevron-left"
-          onPress={router.back}
+          onPress={handleGoBack}
           backgroundColor="transparent"
           size={36}
           color="white"
@@ -85,6 +93,7 @@ const Conversation = () => {
         user={{
           _id: userName,
         }}
+        keyboardShouldPersistTaps="never"
       />
     </View>
   );
