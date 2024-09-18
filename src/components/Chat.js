@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
   },
   chatButton: {
     padding: 8,
-    margin: 8,
     borderRadius: 8,
     flexDirection: "row",
     alignItems: "center",

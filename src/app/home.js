@@ -134,17 +134,12 @@ const Home = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Messages from {userName}</Text>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
+      <View style={[styles.inputContainer, styles.spacingHorizontal]}>
         <TextInput
           value={search}
           onChangeText={setSearch}
           style={styles.input}
-          placeholder="Search for a userName to start a conversation"
+          placeholder="Search for a user to start a conversation"
         />
         <MaterialCommunityIcons.Button
           name="plus"
@@ -166,7 +161,9 @@ const Home = () => {
         data={conversations}
         renderItem={renderItem}
         keyExtractor={(item) => item?.id}
-        contentContainerStyle={styles.list}
+        contentContainerStyle={[styles.list, styles.spacingHorizontal]}
+        ItemSeparatorComponent={<View style={styles.separator} />}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
@@ -189,8 +186,20 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "white",
   },
-  scrollview: {
-    paddingTop: 24,
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 8,
+    marginBottom: 16,
+  },
+  spacingHorizontal: {
+    marginHorizontal: 16,
+  },
+  separator: {
+    marginBottom: 16,
+  },
+  list: {
+    paddingBottom: 40,
   },
 });
 
