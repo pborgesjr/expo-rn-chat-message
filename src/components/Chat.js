@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { View, Text, Pressable, Image, StyleSheet } from "react-native";
 
 import { person } from "../assets";
 
@@ -11,7 +11,10 @@ export const Chat = ({
   onPress,
 }) => {
   return (
-    <TouchableOpacity style={styles.chatButton} onPress={onPress}>
+    <Pressable
+      style={({ pressed }) => [styles.chatButton, pressed && styles.pressed]}
+      onPress={onPress}
+    >
       <Image source={person} style={styles.image} />
 
       <View style={styles.chat}>
@@ -30,7 +33,7 @@ export const Chat = ({
 
         <Text numberOfLines={2}>{lastMessage}</Text>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -76,4 +79,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginLeft: 8,
   },
+  pressed: { opacity: 0.6 },
 });
