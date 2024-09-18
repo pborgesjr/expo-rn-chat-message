@@ -3,9 +3,15 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 
 import { person } from "../assets";
 
-export const Chat = ({ contact, lastSent, unreadCount, lastMessage }) => {
+export const Chat = ({
+  contact,
+  lastSent,
+  unreadCount,
+  lastMessage,
+  onPress,
+}) => {
   return (
-    <TouchableOpacity style={styles.chatButton}>
+    <TouchableOpacity style={styles.chatButton} onPress={onPress}>
       <Image source={person} style={styles.image} />
 
       <View style={styles.chat}>
@@ -14,9 +20,11 @@ export const Chat = ({ contact, lastSent, unreadCount, lastMessage }) => {
 
           <View style={styles.chat.second}>
             <Text>{lastSent}</Text>
-            <View style={styles.circle}>
-              <Text>{unreadCount}</Text>
-            </View>
+            {unreadCount > 0 && (
+              <View style={styles.circle}>
+                <Text>{unreadCount}</Text>
+              </View>
+            )}
           </View>
         </View>
 
