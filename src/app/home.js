@@ -9,7 +9,7 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { Chat } from "../components";
 import { UserContext } from "../context";
@@ -19,9 +19,14 @@ const Home = () => {
   const [search, setSearch] = useState("");
   const [conversations, setConversations] = useState([]);
 
-  const { userName } = useContext(UserContext);
+  const { userName, setUserName } = useContext(UserContext);
 
   const router = useRouter();
+
+  const logout = () => {
+    setUserName(null);
+    router.back();
+  };
 
   const handleSearch = async () => {
     if (search === userName) {
@@ -133,7 +138,17 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Messages from {userName}</Text>
+      <View style={[styles.header, styles.spacingHorizontal]}>
+        <Text style={styles.title}>Messages from {userName}</Text>
+        <Ionicons.Button
+          name="log-out-outline"
+          size={32}
+          color="white"
+          backgroundColor="transparent"
+          onPress={logout}
+        />
+      </View>
+
       <View style={[styles.inputContainer, styles.spacingHorizontal]}>
         <TextInput
           value={search}
@@ -141,20 +156,14 @@ const Home = () => {
           style={styles.input}
           placeholder="Search for a user to start a conversation"
         />
-        <MaterialCommunityIcons.Button
-          name="plus"
+        <Ionicons.Button
+          name="add"
+          size={32}
+          color="white"
           backgroundColor="transparent"
-          style={{
-            borderRadius: 8,
-            backgroundColor: "white",
-            marginLeft: 8,
-          }}
-          iconStyle={{
-            color: "black",
-            marginLeft: 8,
-          }}
           onPress={handleSearch}
           disabled={search === ""}
+          iconStyle={styles.zeroMargin}
         />
       </View>
       <FlatList
@@ -173,6 +182,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 24,
   },
   title: {
     color: "white",
@@ -193,7 +208,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   spacingHorizontal: {
-    marginHorizontal: 16,
+    paddingHorizontal: 16,
   },
   separator: {
     marginBottom: 16,
@@ -201,6 +216,7 @@ const styles = StyleSheet.create({
   list: {
     paddingBottom: 40,
   },
+  zeroMargin: { marginRight: 0 },
 });
 
 export default Home;
