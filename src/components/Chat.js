@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Pressable, Image, StyleSheet } from "react-native";
 
 import { person } from "../assets";
+import { COLOR_PALETTE } from "../theme";
 
 export const Chat = ({
   contact,
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "white",
+    backgroundColor: COLOR_PALETTE.neutral.white,
   },
   chat: {
     flex: 1,
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: "#c2c2c2",
+    backgroundColor: COLOR_PALETTE.neutral.greyc2,
     justifyContent: "center",
     alignItems: "center",
     marginLeft: 8,

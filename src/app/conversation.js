@@ -12,6 +12,7 @@ import { GiftedChat } from "react-native-gifted-chat";
 
 import { UserContext } from "../context/userContext";
 import { STATUS } from "../constants";
+import { COLOR_PALETTE } from "../theme";
 
 const Conversation = () => {
   const [messages, setMessages] = useState([]);
@@ -84,13 +85,17 @@ const Conversation = () => {
           onPress={handleGoBack}
           backgroundColor="transparent"
           size={36}
-          color="white"
+          color={COLOR_PALETTE.neutral.white}
           style={styles.goBackButton}
         />
         <Text style={styles.contact}>{destinationID}</Text>
       </View>
       {status === STATUS.LOADING ? (
-        <ActivityIndicator size="large" color="white" style={styles.loading} />
+        <ActivityIndicator
+          size="large"
+          color={COLOR_PALETTE.neutral.white}
+          style={styles.loading}
+        />
       ) : (
         <GiftedChat
           messages={messages}
@@ -108,7 +113,7 @@ const Conversation = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black",
+    backgroundColor: COLOR_PALETTE.neutral.black,
     padding: 8,
   },
 
@@ -121,7 +126,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginLeft: 8,
     borderRadius: 4,
-    backgroundColor: "white",
+    backgroundColor: COLOR_PALETTE.neutral.white,
     flex: 1,
   },
   header: {
@@ -129,7 +134,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   contact: {
-    color: "white",
+    color: COLOR_PALETTE.neutral.white,
     fontSize: 18,
   },
   goBackButton: {

@@ -3,6 +3,7 @@ import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
 import { UserContext } from "../context/userContext";
+import { COLOR_PALETTE } from "../theme";
 
 const LoginScreen = () => {
   const [user, setUser] = useState("user1");
@@ -40,23 +41,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "black",
+    backgroundColor: COLOR_PALETTE.neutral.black,
     padding: 16,
   },
   title: {
     fontSize: 28,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "white",
+    color: COLOR_PALETTE.neutral.white,
   },
   input: {
     width: "100%",
     height: 50,
     padding: 10,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: COLOR_PALETTE.neutral.greyc2,
     borderRadius: 8,
-    backgroundColor: "#fff",
+    backgroundColor: COLOR_PALETTE.neutral.white,
     fontSize: 16,
     marginBottom: 20,
   },
@@ -65,14 +66,14 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#4CAF50",
+    backgroundColor: COLOR_PALETTE.green,
     borderRadius: 8,
   },
   buttonDisabled: {
-    backgroundColor: "#c2c2c2",
+    backgroundColor: COLOR_PALETTE.neutral.greyc2,
   },
   buttonText: {
-    color: "#fff",
+    color: COLOR_PALETTE.neutral.white,
     fontSize: 18,
     fontWeight: "bold",
   },

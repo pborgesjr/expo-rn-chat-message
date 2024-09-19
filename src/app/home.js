@@ -17,6 +17,7 @@ import debounce from "lodash/debounce";
 import { Chat } from "../components";
 import { STATUS } from "../constants";
 import { UserContext } from "../context/userContext";
+import { COLOR_PALETTE } from "../theme";
 
 const Home = () => {
   const [input, setInput] = useState("");
@@ -112,7 +113,7 @@ const Home = () => {
         <Ionicons.Button
           name="log-out-outline"
           size={32}
-          color="white"
+          color={COLOR_PALETTE.neutral.white}
           backgroundColor="transparent"
           onPress={logout}
         />
@@ -141,7 +142,7 @@ const Home = () => {
                 name="refresh-outline"
                 backgroundColor="transparent"
                 size={32}
-                color="white"
+                color={COLOR_PALETTE.neutral.white}
                 onPress={onRefresh}
                 style={styles.refresh}
                 disabled={
@@ -157,7 +158,7 @@ const Home = () => {
           status === STATUS.LOADING && (
             <ActivityIndicator
               size="large"
-              color="white"
+              color={COLOR_PALETTE.neutral.white}
               style={styles.loading}
             />
           )
@@ -172,7 +173,11 @@ const Home = () => {
               }}
             >
               <Text
-                style={{ color: "white", fontSize: 24, textAlign: "center" }}
+                style={{
+                  color: COLOR_PALETTE.neutral.white,
+                  fontSize: 24,
+                  textAlign: "center",
+                }}
               >
                 {input === ""
                   ? "You have no messages yet. Start a new conversation by searching for a user."
@@ -190,7 +195,9 @@ const Home = () => {
                   }}
                   onPress={() => handleJoinConversation(input)}
                 >
-                  <Text style={{ color: "white" }}>Open</Text>
+                  <Text style={{ color: COLOR_PALETTE.neutral.white }}>
+                    Open
+                  </Text>
                 </Pressable>
               )}
             </View>
@@ -205,7 +212,7 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black",
+    backgroundColor: COLOR_PALETTE.neutral.black,
   },
   header: {
     flexDirection: "row",
@@ -214,7 +221,7 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
   },
   title: {
-    color: "white",
+    color: COLOR_PALETTE.neutral.white,
     fontSize: 24,
     fontWeight: "bold",
     alignSelf: "center",
@@ -223,7 +230,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 8,
     borderRadius: 8,
-    backgroundColor: "white",
+    backgroundColor: COLOR_PALETTE.neutral.white,
   },
   listHeader: {
     flexDirection: "row",
