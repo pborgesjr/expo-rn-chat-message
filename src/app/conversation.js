@@ -1,13 +1,21 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Text, View, StyleSheet, Keyboard } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Keyboard,
+  ActivityIndicator,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { GiftedChat } from "react-native-gifted-chat";
 
 import { UserContext } from "../context/userContext";
+import { STATUS } from "../constants";
 
 const Conversation = () => {
   const [messages, setMessages] = useState([]);
+  const [status, setStatus] = useState(STATUS.INITIAL);
 
   const { userID, socket } = useContext(UserContext);
 
@@ -31,16 +39,24 @@ const Conversation = () => {
     });
   };
 
-  /**Initial fetch */
+  /**Initial fetch - fetch all messages */
   useEffect(() => {
     const initialFetch = async () => {
-      const response = await fetch(
-        `http://192.168.15.22:3000/conversation?roomID=${roomID}`
-      );
+      try {
+        setStatus(STATUS.LOADING);
+        const response = await fetch(
+          `http://192.168.15.22:3000/conversation?roomID=${roomID}`
+        );
 
-      const result = await response.json();
+        const result = await response.json();
 
-      setMessages(result?.messages.reverse() || []);
+        setMessages(result?.messages.reverse() || []);
+
+        setStatus(STATUS.IDLE);
+      } catch (e) {
+        console.error(e);
+        setStatus(STATUS.ERROR);
+      }
     };
 
     initialFetch();
@@ -73,15 +89,18 @@ const Conversation = () => {
         />
         <Text style={styles.contact}>{destinationID}</Text>
       </View>
-
-      <GiftedChat
-        messages={messages}
-        onSend={sendMessage}
-        user={{
-          _id: userID,
-        }}
-        keyboardShouldPersistTaps="never"
-      />
+      {status === STATUS.LOADING ? (
+        <ActivityIndicator size="large" color="white" style={styles.loading} />
+      ) : (
+        <GiftedChat
+          messages={messages}
+          onSend={sendMessage}
+          user={{
+            _id: userID,
+          }}
+          keyboardShouldPersistTaps="never"
+        />
+      )}
     </View>
   );
 };
@@ -116,6 +135,7 @@ const styles = StyleSheet.create({
   goBackButton: {
     marginRight: 24,
   },
+  loading: { alignItems: "center", marginTop: 32 },
 });
 
 export default Conversation;

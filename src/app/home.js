@@ -8,19 +8,21 @@ import {
   Pressable,
   RefreshControl,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 import debounce from "lodash/debounce";
 
 import { Chat } from "../components";
+import { STATUS } from "../constants";
 import { UserContext } from "../context/userContext";
 
 const Home = () => {
   const [input, setInput] = useState("");
   const [allConversations, setAllConversations] = useState([]);
   const [filteredConversations, setFilteredConversations] = useState([]);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [status, setStatus] = useState(STATUS.INITIAL);
 
   const router = useRouter();
   const { userID, socket, setUserID } = useContext(UserContext);
@@ -75,13 +77,14 @@ const Home = () => {
   };
 
   const onRefresh = async () => {
-    setIsRefreshing(true);
+    setStatus(STATUS.REFRESHING);
     await fetchFn();
-    setIsRefreshing(false);
+    setStatus(STATUS.IDLE);
   };
 
   const fetchFn = useCallback(async () => {
     try {
+      setStatus(STATUS.LOADING);
       const response = await fetch(
         `http://192.168.15.22:3000/conversations?origin=${userID}`
       );
@@ -90,7 +93,9 @@ const Home = () => {
 
       setAllConversations(result);
       setFilteredConversations(result);
+      setStatus(STATUS.IDLE);
     } catch (e) {
+      setStatus(STATUS.ERROR);
       console.error(e);
     }
   }, []);
@@ -118,7 +123,7 @@ const Home = () => {
         renderItem={renderItem}
         refreshControl={
           <RefreshControl
-            refreshing={isRefreshing}
+            refreshing={status === STATUS.REFRESHING}
             onRefresh={onRefresh}
             enabled
           />
@@ -139,41 +144,57 @@ const Home = () => {
                 color="white"
                 onPress={onRefresh}
                 style={styles.refresh}
+                disabled={
+                  status === STATUS.REFRESHING || status === STATUS.LOADING
+                }
               />
             )}
           </View>
         }
         keyExtractor={(item) => item?._id}
         contentContainerStyle={[styles.list, styles.spacingHorizontal]}
+        ListFooterComponent={
+          status === STATUS.LOADING && (
+            <ActivityIndicator
+              size="large"
+              color="white"
+              style={styles.loading}
+            />
+          )
+        }
         ItemSeparatorComponent={<View style={styles.separator} />}
         ListEmptyComponent={
-          <View
-            style={{
-              alignItems: "center",
-              marginTop: 32,
-            }}
-          >
-            <Text style={{ color: "white", fontSize: 24, textAlign: "center" }}>
-              {input === ""
-                ? "You have no messages yet. Start a new conversation by searching for a user."
-                : "No result found! Try searching for another user or click on the button to start a new conversation with this user."}
-            </Text>
-            {input !== "" && (
-              <Pressable
-                style={{
-                  marginTop: 24,
-                  backgroundColor: "#4CAF50",
-                  paddingVertical: 8,
-                  borderRadius: 4,
-                  width: "80%",
-                  alignItems: "center",
-                }}
-                onPress={() => handleJoinConversation(input)}
+          status !== STATUS.LOADING && (
+            <View
+              style={{
+                alignItems: "center",
+                marginTop: 32,
+              }}
+            >
+              <Text
+                style={{ color: "white", fontSize: 24, textAlign: "center" }}
               >
-                <Text style={{ color: "white" }}>Open</Text>
-              </Pressable>
-            )}
-          </View>
+                {input === ""
+                  ? "You have no messages yet. Start a new conversation by searching for a user."
+                  : "No result found! Try searching for another user or click on the button to start a new conversation with this user."}
+              </Text>
+              {input !== "" && (
+                <Pressable
+                  style={{
+                    marginTop: 24,
+                    backgroundColor: "#4CAF50",
+                    paddingVertical: 8,
+                    borderRadius: 4,
+                    width: "80%",
+                    alignItems: "center",
+                  }}
+                  onPress={() => handleJoinConversation(input)}
+                >
+                  <Text style={{ color: "white" }}>Open</Text>
+                </Pressable>
+              )}
+            </View>
+          )
         }
         showsVerticalScrollIndicator={false}
       />
@@ -220,6 +241,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   refresh: { marginLeft: 24 },
+  loading: { alignItems: "center", marginTop: 32 },
 });
 
 export default Home;
