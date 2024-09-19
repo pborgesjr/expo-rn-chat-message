@@ -25,6 +25,7 @@ const Conversation = () => {
   const { destinationID, roomID } = useLocalSearchParams();
 
   const handleGoBack = () => {
+    /** Workaround to manually hide the keyboard on some certain devices of Android when using GiftedChat */
     Keyboard.dismiss();
 
     setTimeout(() => {
@@ -32,6 +33,7 @@ const Conversation = () => {
     }, 200);
   };
 
+  /** Function to emit event and send the message through the socket */
   const sendMessage = async (currentMessages = []) => {
     const { _id, createdAt, text, user } = currentMessages[0];
 
@@ -60,6 +62,7 @@ const Conversation = () => {
 
     initialFetch();
 
+    /** Cleanup function to emit leave-room event and unbind event listener for "message" on screen unmount  */
     return () => {
       socket.emit("leave-room", roomID);
       socket.off("message");

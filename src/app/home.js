@@ -29,12 +29,14 @@ const Home = () => {
   const router = useRouter();
   const { userID, socket, setUserID } = useContext(UserContext);
 
+  /** Fake logout. It manually disconnects the user from the socket */
   const logout = () => {
     setUserID(null);
     socket.disconnect();
     router.back();
   };
 
+  /** Emit "join-conversation" event to join the room of conversation and receive incoming messages in real time */
   const handleJoinConversation = (destinationID) => {
     socket.emit("join-conversation", userID, destinationID);
 
@@ -46,6 +48,7 @@ const Home = () => {
     });
   };
 
+  /** Debounced function to only call the filter logic once and after 2000 miliseconds */
   const debouncedFilterConversations = useCallback(
     debounce((text) => {
       if (text === "") {
@@ -57,16 +60,20 @@ const Home = () => {
         );
         setFilteredConversations(filtered);
       }
+
+      setStatus(STATUS.IDLE);
     }, 2000),
     [allConversations]
   );
 
   const onChangeInput = (text) => {
     setInput(text);
+    setStatus(STATUS.LOADING);
     debouncedFilterConversations(text);
   };
 
   const renderItem = ({ item }) => {
+    /** When the user starts the conversation, it is assigned as the origin user. This code is meant to return the correct value as destination, despite who started the conversation   */
     const destination =
       userID === item.destination ? item.origin : item.destination;
 
@@ -99,7 +106,7 @@ const Home = () => {
     }
   }, []);
 
-  /**Initial fetch */
+  /**Initial fetch - Fetch all opened conversations */
   useEffect(() => {
     fetchFn();
   }, [fetchFn]);

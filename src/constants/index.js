@@ -1,3 +1,4 @@
+/** Possible values to all operation status */
 export const STATUS = {
   INITIAL: "initial",
   IDLE: "idle",
