@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { GiftedChat } from "react-native-gifted-chat";
 
 import { UserContext } from "../context/userContext";
@@ -80,8 +80,8 @@ const Conversation = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <MaterialCommunityIcons.Button
-          name="chevron-left"
+        <Ionicons.Button
+          name="chevron-back-outline"
           onPress={handleGoBack}
           backgroundColor="transparent"
           size={36}
