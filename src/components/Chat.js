@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Pressable, Image, StyleSheet } from "react-native";
 
 import { person } from "../assets";
-import { COLOR_PALETTE } from "../theme";
+import { COLOR_PALETTE, SPACING } from "../theme";
 
 export const Chat = ({
   contact,
@@ -42,23 +42,23 @@ const styles = StyleSheet.create({
   image: {
     width: 50,
     height: 50,
-    borderRadius: 25,
+    borderRadius: SPACING.size25,
   },
   chatButton: {
-    padding: 8,
-    borderRadius: 8,
+    padding: SPACING.size8,
+    borderRadius: SPACING.size8,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: COLOR_PALETTE.neutral.white,
   },
   chat: {
     flex: 1,
-    marginLeft: 12,
+    marginLeft: SPACING.size16,
     first: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      marginBottom: 4,
+      marginBottom: SPACING.size4,
     },
     second: {
       flexDirection: "row",
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLOR_PALETTE.neutral.greyc2,
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: 8,
+    marginLeft: SPACING.size8,
   },
   pressed: { opacity: 0.6 },
 });

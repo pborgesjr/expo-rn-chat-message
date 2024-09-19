@@ -17,7 +17,7 @@ import debounce from "lodash/debounce";
 import { Chat } from "../components";
 import { STATUS } from "../constants";
 import { UserContext } from "../context";
-import { COLOR_PALETTE } from "../theme";
+import { COLOR_PALETTE, GENERAL_STYLES, SPACING } from "../theme";
 import { fetchAllConversations } from "../services";
 
 const Home = () => {
@@ -139,7 +139,7 @@ const Home = () => {
               <Ionicons.Button
                 name="refresh-outline"
                 backgroundColor="transparent"
-                size={32}
+                size={SPACING.size32}
                 color={COLOR_PALETTE.neutral.white}
                 onPress={onRefresh}
                 style={styles.refresh}
@@ -157,45 +157,25 @@ const Home = () => {
             <ActivityIndicator
               size="large"
               color={COLOR_PALETTE.neutral.white}
-              style={styles.loading}
+              style={GENERAL_STYLES.loadingIndicator}
             />
           )
         }
         ItemSeparatorComponent={<View style={styles.separator} />}
         ListEmptyComponent={
           status !== STATUS.LOADING && (
-            <View
-              style={{
-                alignItems: "center",
-                marginTop: 32,
-              }}
-            >
-              <Text
-                style={{
-                  color: COLOR_PALETTE.neutral.white,
-                  fontSize: 24,
-                  textAlign: "center",
-                }}
-              >
+            <View style={styles.empty}>
+              <Text style={styles.emptyText}>
                 {input === ""
                   ? "You have no messages yet. Start a new conversation by searching for a user."
                   : "No result found! Try searching for another user or click on the button to start a new conversation with this user."}
               </Text>
               {input !== "" && (
                 <Pressable
-                  style={{
-                    marginTop: 24,
-                    backgroundColor: "#4CAF50",
-                    paddingVertical: 8,
-                    borderRadius: 4,
-                    width: "80%",
-                    alignItems: "center",
-                  }}
+                  style={styles.emptyButton}
                   onPress={() => handleJoinConversation(input)}
                 >
-                  <Text style={{ color: COLOR_PALETTE.neutral.white }}>
-                    Open
-                  </Text>
+                  <Text style={styles.emptyButtonText}>Open</Text>
                 </Pressable>
               )}
             </View>
@@ -212,11 +192,29 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLOR_PALETTE.neutral.black,
   },
+  empty: {
+    alignItems: "center",
+    marginTop: SPACING.size32,
+  },
+  emptyText: {
+    color: COLOR_PALETTE.neutral.white,
+    fontSize: 24,
+    textAlign: "center",
+  },
+  emptyButton: {
+    marginTop: SPACING.size24,
+    backgroundColor: COLOR_PALETTE.green,
+    paddingVertical: SPACING.size8,
+    borderRadius: SPACING.size4,
+    width: "80%",
+    alignItems: "center",
+  },
+  emptyButtonText: { color: COLOR_PALETTE.neutral.white },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 24,
+    paddingVertical: SPACING.size24,
   },
   title: {
     color: COLOR_PALETTE.neutral.white,
@@ -226,27 +224,26 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    padding: 8,
-    borderRadius: 8,
+    padding: SPACING.size8,
+    borderRadius: SPACING.size8,
     backgroundColor: COLOR_PALETTE.neutral.white,
   },
   listHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 8,
-    marginBottom: 16,
+    marginTop: SPACING.size8,
+    marginBottom: SPACING.size16,
   },
   spacingHorizontal: {
-    paddingHorizontal: 16,
+    paddingHorizontal: SPACING.size16,
   },
   separator: {
-    marginBottom: 16,
+    marginBottom: SPACING.size16,
   },
   list: {
-    paddingBottom: 40,
+    paddingBottom: SPACING.size40,
   },
-  refresh: { marginLeft: 24 },
-  loading: { alignItems: "center", marginTop: 32 },
+  refresh: { marginLeft: SPACING.size24 },
 });
 
 export default Home;

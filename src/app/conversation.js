@@ -12,7 +12,7 @@ import { GiftedChat } from "react-native-gifted-chat";
 
 import { UserContext } from "../context";
 import { STATUS } from "../constants";
-import { COLOR_PALETTE } from "../theme";
+import { COLOR_PALETTE, GENERAL_STYLES, SPACING } from "../theme";
 import { fetchMessages } from "../services";
 
 const Conversation = () => {
@@ -82,7 +82,7 @@ const Conversation = () => {
           name="chevron-back-outline"
           onPress={handleGoBack}
           backgroundColor="transparent"
-          size={36}
+          size={SPACING.size36}
           color={COLOR_PALETTE.neutral.white}
           style={styles.goBackButton}
         />
@@ -92,7 +92,7 @@ const Conversation = () => {
         <ActivityIndicator
           size="large"
           color={COLOR_PALETTE.neutral.white}
-          style={styles.loading}
+          style={GENERAL_STYLES.loadingIndicator}
         />
       ) : (
         <GiftedChat
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLOR_PALETTE.neutral.black,
-    padding: 8,
+    padding: SPACING.size8,
   },
 
   inputContainer: {
@@ -121,9 +121,9 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 45,
-    paddingHorizontal: 8,
-    marginLeft: 8,
-    borderRadius: 4,
+    paddingHorizontal: SPACING.size8,
+    marginLeft: SPACING.size8,
+    borderRadius: SPACING.size4,
     backgroundColor: COLOR_PALETTE.neutral.white,
     flex: 1,
   },
@@ -136,9 +136,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   goBackButton: {
-    marginRight: 24,
+    marginRight: SPACING.size24,
   },
-  loading: { alignItems: "center", marginTop: 32 },
 });
 
 export default Conversation;
