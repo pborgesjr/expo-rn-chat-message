@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
-import { UserContext } from "../context/userContext";
+import { UserContext } from "../context";
 import { COLOR_PALETTE } from "../theme";
 
 const LoginScreen = () => {

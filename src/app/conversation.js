@@ -10,7 +10,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { GiftedChat } from "react-native-gifted-chat";
 
-import { UserContext } from "../context/userContext";
+import { UserContext } from "../context";
 import { STATUS } from "../constants";
 import { COLOR_PALETTE } from "../theme";
 
