@@ -13,6 +13,7 @@ import { GiftedChat } from "react-native-gifted-chat";
 import { UserContext } from "../context";
 import { STATUS } from "../constants";
 import { COLOR_PALETTE } from "../theme";
+import { fetchMessages } from "../services";
 
 const Conversation = () => {
   const [messages, setMessages] = useState([]);
@@ -45,11 +46,8 @@ const Conversation = () => {
     const initialFetch = async () => {
       try {
         setStatus(STATUS.LOADING);
-        const response = await fetch(
-          `http://192.168.15.22:3000/conversation?roomID=${roomID}`
-        );
 
-        const result = await response.json();
+        const result = await fetchMessages(roomID);
 
         setMessages(result?.messages.reverse() || []);
 

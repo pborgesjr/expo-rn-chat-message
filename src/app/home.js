@@ -18,6 +18,7 @@ import { Chat } from "../components";
 import { STATUS } from "../constants";
 import { UserContext } from "../context";
 import { COLOR_PALETTE } from "../theme";
+import { fetchAllConversations } from "../services";
 
 const Home = () => {
   const [input, setInput] = useState("");
@@ -86,11 +87,8 @@ const Home = () => {
   const fetchFn = useCallback(async () => {
     try {
       setStatus(STATUS.LOADING);
-      const response = await fetch(
-        `http://192.168.15.22:3000/conversations?origin=${userID}`
-      );
 
-      const result = await response.json();
+      const result = await fetchAllConversations(userID);
 
       setAllConversations(result);
       setFilteredConversations(result);
