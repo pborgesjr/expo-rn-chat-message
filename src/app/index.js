@@ -5,14 +5,14 @@ import { useRouter } from "expo-router";
 import { UserContext } from "../context/userContext";
 
 const LoginScreen = () => {
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState("user1");
   const router = useRouter();
   const { setUserID, socket } = useContext(UserContext);
 
   const handleLogin = () => {
     setUserID(user);
     socket.connect();
-    router.push("home");
+    router.navigate("home");
   };
 
   return (

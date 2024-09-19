@@ -1,11 +1,20 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { View, Text, Pressable, Image, StyleSheet } from "react-native";
 
 import { person } from "../assets";
 
-export const Chat = ({ contact, lastSent, unreadCount, lastMessage }) => {
+export const Chat = ({
+  contact,
+  lastSent,
+  unreadCount,
+  lastMessage,
+  onPress,
+}) => {
   return (
-    <TouchableOpacity style={styles.chatButton}>
+    <Pressable
+      style={({ pressed }) => [styles.chatButton, pressed && styles.pressed]}
+      onPress={onPress}
+    >
       <Image source={person} style={styles.image} />
 
       <View style={styles.chat}>
@@ -14,15 +23,17 @@ export const Chat = ({ contact, lastSent, unreadCount, lastMessage }) => {
 
           <View style={styles.chat.second}>
             <Text>{lastSent}</Text>
-            <View style={styles.circle}>
-              <Text>{unreadCount}</Text>
-            </View>
+            {unreadCount > 0 && (
+              <View style={styles.circle}>
+                <Text>{unreadCount}</Text>
+              </View>
+            )}
           </View>
         </View>
 
         <Text numberOfLines={2}>{lastMessage}</Text>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -34,7 +45,6 @@ const styles = StyleSheet.create({
   },
   chatButton: {
     padding: 8,
-    margin: 8,
     borderRadius: 8,
     flexDirection: "row",
     alignItems: "center",
@@ -69,4 +79,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginLeft: 8,
   },
+  pressed: { opacity: 0.6 },
 });

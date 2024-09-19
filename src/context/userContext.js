@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000", { autoConnect: false });
+const socket = io("http://192.168.15.22:3000", { autoConnect: false });
 
 export const UserContext = createContext(null);
 

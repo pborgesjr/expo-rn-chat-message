@@ -1,176 +1,182 @@
-import React, { useState, useContext } from "react";
-import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
+import React, { useState, useContext, useEffect, useCallback } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TextInput,
+  Pressable,
+  RefreshControl,
+  Platform,
+} from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useRouter } from "expo-router";
+import debounce from "lodash/debounce";
 
 import { Chat } from "../components";
 import { UserContext } from "../context/userContext";
 
-//TODO: remove mock
-/* const chatInstances = [
-  {
-    contact: "+55 (11) 93044-5599",
-    lastSent: "09:30",
-    unreadCount: 5,
-    lastMessage:
-      "Exercitation enim esse Lorem veniam elit. Magna et nisi quis ad deserunt consequat ea eiusmod consequat commodo aliquip voluptate sit.",
-  },
-  {
-    contact: "+55 (11) 98123-4567",
-    lastSent: "11:00",
-    unreadCount: 2,
-    lastMessage:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque commodo magna.",
-  },
-  {
-    contact: "+55 (21) 91234-5678",
-    lastSent: "14:15",
-    unreadCount: 3,
-    lastMessage:
-      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-  },
-  {
-    contact: "+55 (31) 98765-4321",
-    lastSent: "08:45",
-    unreadCount: 1,
-    lastMessage:
-      "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-  },
-  {
-    contact: "+55 (41) 97654-3210",
-    lastSent: "12:30",
-    unreadCount: 0,
-    lastMessage:
-      "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-  },
-  {
-    contact: "+55 (51) 95678-1234",
-    lastSent: "15:40",
-    unreadCount: 4,
-    lastMessage:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
-  },
-  {
-    contact: "+55 (61) 96543-2109",
-    lastSent: "10:20",
-    unreadCount: 8,
-    lastMessage:
-      "Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
-  },
-  {
-    contact: "+55 (71) 93456-7890",
-    lastSent: "13:55",
-    unreadCount: 6,
-    lastMessage:
-      "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.",
-  },
-  {
-    contact: "+55 (81) 94567-8901",
-    lastSent: "16:10",
-    unreadCount: 9,
-    lastMessage:
-      "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.",
-  },
-  {
-    contact: "+55 (91) 91234-5678",
-    lastSent: "07:05",
-    unreadCount: 12,
-    lastMessage:
-      "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?",
-  },
-  {
-    contact: "+55 (11) 92345-6789",
-    lastSent: "18:45",
-    unreadCount: 7,
-    lastMessage:
-      "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.",
-  },
-  {
-    contact: "+55 (21) 93456-7890",
-    lastSent: "19:00",
-    unreadCount: 0,
-    lastMessage:
-      "Vel illum qui dolorem eum fugiat quo voluptas nulla pariatur.",
-  },
-  {
-    contact: "+55 (31) 94567-8901",
-    lastSent: "20:30",
-    unreadCount: 3,
-    lastMessage:
-      "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti.",
-  },
-  {
-    contact: "+55 (41) 95678-9012",
-    lastSent: "21:15",
-    unreadCount: 5,
-    lastMessage: "Et harum quidem rerum facilis est et expedita distinctio.",
-  },
-  {
-    contact: "+55 (51) 96789-0123",
-    lastSent: "22:10",
-    unreadCount: 4,
-    lastMessage:
-      "Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus.",
-  },
-  {
-    contact: "+55 (61) 97890-1234",
-    lastSent: "06:00",
-    unreadCount: 0,
-    lastMessage: "Omnis voluptas assumenda est, omnis dolor repellendus.",
-  },
-  {
-    contact: "+55 (71) 98901-2345",
-    lastSent: "17:45",
-    unreadCount: 6,
-    lastMessage:
-      "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.",
-  },
-  {
-    contact: "+55 (81) 99912-3456",
-    lastSent: "23:50",
-    unreadCount: 11,
-    lastMessage:
-      "Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur.",
-  },
-  {
-    contact: "+55 (91) 91023-4567",
-    lastSent: "05:30",
-    unreadCount: 2,
-    lastMessage: "Perferendis doloribus asperiores repellat.",
-  },
-  {
-    contact: "+55 (11) 92134-5678",
-    lastSent: "16:30",
-    unreadCount: 0,
-    lastMessage: "Vero eos et accusamus et iusto odio dignissimos ducimus.",
-  },
-]; */
-
 const Home = () => {
-  const [search, setSearch] = useState("");
+  const [input, setInput] = useState("");
+  const [allConversations, setAllConversations] = useState([]);
+  const [filteredConversations, setFilteredConversations] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const { userID, socket } = useContext(UserContext);
+  const router = useRouter();
+  const { userID, socket, setUserID } = useContext(UserContext);
 
-  const handleOpenConversation = () => {
-    socket.emit("join", "teste123");
+  const logout = () => {
+    setUserID(null);
+    socket.disconnect();
+    router.back();
   };
 
-  socket.on("joined", (conversationID) => {
-    console.log(conversationID);
-  });
+  const handleJoinConversation = (destinationID) => {
+    socket.emit("join-conversation", userID, destinationID);
+
+    socket.on("join-conversation", (roomID) => {
+      router.navigate({
+        pathname: "conversation",
+        params: { destinationID, roomID },
+      });
+    });
+  };
+
+  const debouncedFilterConversations = useCallback(
+    debounce((text) => {
+      if (text === "") {
+        setFilteredConversations(allConversations);
+      } else {
+        const filtered = allConversations.filter(
+          (item) =>
+            item.origin.includes(text) || item.destination.includes(text)
+        );
+        setFilteredConversations(filtered);
+      }
+    }, 2000),
+    [allConversations]
+  );
+
+  const onChangeInput = (text) => {
+    setInput(text);
+    debouncedFilterConversations(text);
+  };
+
+  const renderItem = ({ item }) => {
+    const destination =
+      userID === item.destination ? item.origin : item.destination;
+
+    return (
+      <Chat
+        contact={destination}
+        onPress={() => handleJoinConversation(destination)}
+      />
+    );
+  };
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchFn();
+    setIsRefreshing(false);
+  };
+
+  const fetchFn = useCallback(async () => {
+    try {
+      const response = await fetch(
+        `http://192.168.15.22:3000/conversations?origin=${userID}`
+      );
+
+      const result = await response.json();
+
+      setAllConversations(result);
+      setFilteredConversations(result);
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  /**Initial fetch */
+  useEffect(() => {
+    fetchFn();
+  }, [fetchFn]);
 
   return (
     <View style={styles.container}>
-      <Text style={{ color: "white" }}>Conversations from {userID}</Text>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <TextInput
-          value={search}
-          onChangeText={setSearch}
-          style={styles.input}
-          placeholder="Start a new conversation or search for existing ones"
+      <View style={[styles.header, styles.spacingHorizontal]}>
+        <Text style={styles.title}>Messages from {userID}</Text>
+        <Ionicons.Button
+          name="log-out-outline"
+          size={32}
+          color="white"
+          backgroundColor="transparent"
+          onPress={logout}
         />
-        <Pressable onPress={handleOpenConversation}>
-          <Text>New</Text>
-        </Pressable>
       </View>
+
+      <FlatList
+        data={filteredConversations}
+        renderItem={renderItem}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={onRefresh}
+            enabled
+          />
+        }
+        ListHeaderComponent={
+          <View style={styles.listHeader}>
+            <TextInput
+              value={input}
+              onChangeText={onChangeInput}
+              style={styles.input}
+              placeholder="Search for a user"
+            />
+            {Platform.OS === "web" && (
+              <Ionicons.Button
+                name="refresh-outline"
+                backgroundColor="transparent"
+                size={32}
+                color="white"
+                onPress={onRefresh}
+                style={styles.refresh}
+              />
+            )}
+          </View>
+        }
+        keyExtractor={(item) => item?._id}
+        contentContainerStyle={[styles.list, styles.spacingHorizontal]}
+        ItemSeparatorComponent={<View style={styles.separator} />}
+        ListEmptyComponent={
+          <View
+            style={{
+              alignItems: "center",
+              marginTop: 32,
+            }}
+          >
+            <Text style={{ color: "white", fontSize: 24, textAlign: "center" }}>
+              {input === ""
+                ? "You have no messages yet. Start a new conversation by searching for a user."
+                : "No result found! Try searching for another user or click on the button to start a new conversation with this user."}
+            </Text>
+            {input !== "" && (
+              <Pressable
+                style={{
+                  marginTop: 24,
+                  backgroundColor: "#4CAF50",
+                  paddingVertical: 8,
+                  borderRadius: 4,
+                  width: "80%",
+                  alignItems: "center",
+                }}
+                onPress={() => handleJoinConversation(input)}
+              >
+                <Text style={{ color: "white" }}>Open</Text>
+              </Pressable>
+            )}
+          </View>
+        }
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 };
@@ -180,15 +186,40 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "black",
   },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 24,
+  },
+  title: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "bold",
+    alignSelf: "center",
+  },
   input: {
+    flex: 1,
     padding: 8,
-    margin: 8,
     borderRadius: 8,
     backgroundColor: "white",
   },
-  scrollview: {
-    paddingTop: 24,
+  listHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 8,
+    marginBottom: 16,
   },
+  spacingHorizontal: {
+    paddingHorizontal: 16,
+  },
+  separator: {
+    marginBottom: 16,
+  },
+  list: {
+    paddingBottom: 40,
+  },
+  refresh: { marginLeft: 24 },
 });
 
 export default Home;
