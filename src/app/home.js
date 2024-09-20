@@ -40,13 +40,6 @@ const Home = () => {
   /** Emit "join-conversation" event to join the room of conversation and receive incoming messages in real time */
   const handleJoinConversation = (destinationID) => {
     socket.emit("join-conversation", userID, destinationID);
-
-    socket.on("join-conversation", (roomID) => {
-      router.navigate({
-        pathname: "conversation",
-        params: { destinationID, roomID },
-      });
-    });
   };
 
   /** Debounced function to only call the filter logic once and after 2000 miliseconds */
@@ -111,6 +104,15 @@ const Home = () => {
   useEffect(() => {
     fetchFn();
   }, [fetchFn]);
+
+  useEffect(() => {
+    socket.on("joined-conversation", (roomID, destinationID) => {
+      router.navigate({
+        pathname: "conversation",
+        params: { destinationID, roomID },
+      });
+    });
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

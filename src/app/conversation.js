@@ -118,20 +118,24 @@ const Conversation = () => {
 
     initialFetch();
 
-    /** Cleanup function to emit leave-room event and unbind event listener for "message" on screen unmount  */
+    /** Cleanup function to emit leave-room  */
     return () => {
       socket.emit("leave-room", roomID);
-      socket.off("message");
     };
   }, []);
 
   /** Listener to update incoming messages */
   useEffect(() => {
-    socket.on("message", (message = []) => {
+    socket.on("send-message", (message = []) => {
       setMessages((previousMessages) =>
         GiftedChat.append(previousMessages, [message])
       );
     });
+
+        /** Cleanup function to unbind event listener for "send-message" on screen unmount  */
+        return () => {
+          socket.off("send-message");
+        };
   }, []);
 
   return (
