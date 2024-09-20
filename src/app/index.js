@@ -25,6 +25,11 @@ const LoginScreen = () => {
         placeholder="Enter your username"
         value={user}
         onChangeText={setUser}
+        autoCapitalize="none"
+        autoCorrect={false}
+        autoComplete="off"
+        onSubmitEditing={user === "" ? handleLogin : () => {}}
+        returnKeyType="done"
       />
       <Pressable
         style={[styles.button, user === "" && styles.buttonDisabled]}

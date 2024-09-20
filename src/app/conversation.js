@@ -4,20 +4,22 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { GiftedChat } from "react-native-gifted-chat";
-import * as ImagePicker from "expo-image-picker";
 
 import { UserContext } from "../context";
 import { STATUS } from "../constants";
 import { COLOR_PALETTE, SPACING } from "../theme";
 import { fetchMessages, uploadImageService } from "../services";
+import { handleSelectImageFromGallery, handleSelectImageFromCameraRoll } from "../utils";
+
 
 const Conversation = () => {
   const [messages, setMessages] = useState([]);
   //TODO: give feedback to the user using status state
   const [status, setStatus] = useState(STATUS.INITIAL);
-  const [retries, setRetries] = useState(3);
 
   const { userID, socket } = useContext(UserContext);
+
+  
 
   const router = useRouter();
   const { destinationID, roomID } = useLocalSearchParams();
@@ -43,61 +45,57 @@ const Conversation = () => {
   };
 
   const selectImageFromAlbum = async () => {
-    const imageFromLibrary = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 0.5,
-    });
+    const imageFromGallery = await handleSelectImageFromGallery();
 
-    if (!imageFromLibrary.canceled) {
-      await uploadImage(imageFromLibrary?.assets[0]?.uri);
+    if (imageFromGallery) {
+      await uploadImage(imageFromGallery);
     }
   };
 
   const captureImageAndSend = async () => {
-    const imageFromCamera = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 0.5,
-    });
-
-    if (!imageFromCamera.canceled) {
-      await uploadImage(imageFromCamera?.assets[0]?.uri);
+    const imageFromCameraRoll = await handleSelectImageFromCameraRoll();
+    
+ 
+    if (imageFromCameraRoll) {
+      await uploadImage(imageFromCameraRoll);
     }
   };
 
-  const uploadImage = async (uri) => {
+  const uploadImage = async (uri, retries = 3) => {
     let formData = new FormData();
-
+  
     formData.append("image", {
       uri: uri,
       name: "image.jpg",
       type: "image/jpeg",
     });
-
+  
     formData.append("documentID", roomID);
     formData.append("userID", userID);
+  
     setStatus(STATUS.SENDING);
+  
     try {
       const data = await uploadImageService(formData);
-
+  
       if (data.success) {
         await sendMessage([data.message], true);
       }
     } catch (error) {
-      setRetries((prevState) => prevState - 1);
       console.log("Error uploading image:", error);
-
+  
       if (retries > 0) {
-        await uploadImage(uri);
+        console.log(`Retrying... attempts left: ${retries - 1}`);
+        await uploadImage(uri, retries - 1); // Recursively retry with one less attempt
       } else {
-        setRetries(3);
+        console.log("Max retries reached.");
         return;
       }
     } finally {
       setStatus(STATUS.IDLE);
     }
   };
+  
 
   /**Initial fetch - fetch all messages */
   useEffect(() => {
