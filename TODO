@@ -1,0 +1,5 @@
+- Insert theme selection
+- Insert i18n
+- Provide feedback to the user when the image is being sent to the backend
+- Creat unit tests
+- Create mock config outside of tests

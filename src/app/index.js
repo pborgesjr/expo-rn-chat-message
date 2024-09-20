@@ -6,7 +6,7 @@ import { UserContext } from "../context";
 import { COLOR_PALETTE, SPACING } from "../theme";
 
 const LoginScreen = () => {
-  const [user, setUser] = useState("user1");
+  const [user, setUser] = useState("");
   const router = useRouter();
   const { setUserID, socket } = useContext(UserContext);
 
