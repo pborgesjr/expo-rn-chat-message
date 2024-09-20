@@ -5,4 +5,5 @@ export const STATUS = {
   LOADING: "loading",
   ERROR: "error",
   REFRESHING: "refreshing",
+  SENDING: "sending",
 };
