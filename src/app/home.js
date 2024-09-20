@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import debounce from "lodash/debounce";
 
@@ -112,7 +113,7 @@ const Home = () => {
   }, [fetchFn]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={[styles.header, styles.spacingHorizontal]}>
         <Text style={styles.title}>Messages from {userID}</Text>
         <Ionicons.Button
@@ -190,7 +191,7 @@ const Home = () => {
         }
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

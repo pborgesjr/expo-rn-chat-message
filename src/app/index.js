@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
@@ -17,7 +18,7 @@ const LoginScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Fake Login</Text>
       <TextInput
         style={styles.input}
@@ -32,7 +33,7 @@ const LoginScreen = () => {
       >
         <Text style={styles.buttonText}>Login</Text>
       </Pressable>
-    </View>
+    </SafeAreaView>
   );
 };
 

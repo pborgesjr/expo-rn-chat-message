@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Text, View, StyleSheet, Keyboard } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { GiftedChat } from "react-native-gifted-chat";
@@ -134,7 +135,7 @@ const Conversation = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={[styles.rowCenterAligned, styles.header]}>
         <View style={styles.rowCenterAligned}>
           <Ionicons.Button
@@ -173,7 +174,7 @@ const Conversation = () => {
         }}
         keyboardShouldPersistTaps="never"
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
