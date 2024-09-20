@@ -130,9 +130,10 @@ const Conversation = () => {
       );
     });
 
-        /** Cleanup function to unbind event listener for "send-message" on screen unmount  */
+        /** Cleanup function to unbind event listener for "send-message" and "join-conversation" on screen unmount  */
         return () => {
           socket.off("send-message");
+          socket.off("join-conversation");
         };
   }, []);
 
