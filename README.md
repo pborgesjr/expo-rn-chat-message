@@ -42,10 +42,6 @@ The chat interface where users can:
 └── constants           # Constant values used across the project
 ```
 
-## Opinion
-It was an interesting and funny technical assignment to do. It evolves many technologies and skills. If I had more time, I would implement way more functionalities to make it similar to chat applications that we all know, like WhatsApp, Instagram, iMessage and others.
-Regarding to coding, I would create unit tests to help assure that the logic is working properly and as it should. Implement internationalization regard to texts and theme selection. The library(https://github.com/FaridSafi/react-native-gifted-chat) that I used for the chat window has some downsides, the input component sometimes causes some flickering to the application, the keyboard does not hide automatically when unmounting the screen(this made me implement a hotfix to make it work, the library probably needs a patch), but it is not all that bad. The library provides good functionalities out of the box regarding to chat bubbles, timestamps, ticks, message list and many others.
-
 ## Demo
 
 https://drive.google.com/file/d/1MUip5CrBHZ7KmnZh4zePXab_v2CnwF7q/view?usp=sharing
